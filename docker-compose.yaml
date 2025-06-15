@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  app:
+    # Замените на ваш образ из Docker Hub
+    image: amazinghorsess/lab3-app:1.0
+    container_name: polina_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      # Переменная окружения, указывающая на файл лога внутри контейнера
+      - [cite_start]LOG_FILE=/app/logs/connections.log [cite: 196, 198]
+    volumes:
+      # Bind mount для папки с логами
+      - type: bind
+        source: ./logs
+        target: /app/logs
+      # Volume для шаблонов
+      - type: volume
+        source: app_templates
+        target: /app/templates
+    networks:
+      petrov_net:
+        # Статический IP-адрес для контейнера
+        ipv4_address: 10.20.1.10
+
+# Описание тома для шаблонов
+volumes:
+  app_templates:
+    driver: local
+
+# Описание пользовательской сети
+networks:
+  petrov_net:
+    [cite_start]driver: bridge [cite: 95]
+    ipam:
+      config:
+        - [cite_start]subnet: 10.20.1.0/24 [cite: 95]
+          [cite_start]gateway: 10.20.1.1 [cite: 95]
